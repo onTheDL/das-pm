@@ -1,20 +1,20 @@
 import { createMuiTheme } from "@material-ui/core/styles";
 
-const arcBlue = "#0B72B9";
-const arcOrange = "#FFBA60";
-const arcGrey = "#868686";
+const dasBlue = "#0B72B9";
+const dasOrange = "#FFBA60";
+const dasGrey = "#868686";
 
 export default createMuiTheme({
   palette: {
     common: {
-      blue: arcBlue,
-      orange: arcOrange
+      blue: dasBlue,
+      orange: dasOrange
     },
     primary: {
-      main: arcBlue
+      main: dasBlue
     },
     secondary: {
-      main: arcOrange
+      main: dasOrange
     }
   },
   typography: {
@@ -35,29 +35,29 @@ export default createMuiTheme({
       fontFamily: "Raleway",
       fontWeight: 700,
       fontSize: "2.5rem",
-      color: arcBlue,
+      color: dasBlue,
       lineHeight: 1.5
     },
     h3: {
       fontFamily: "Pacifico",
       fontSize: "2.5rem",
-      color: arcBlue
+      color: dasBlue
     },
     h4: {
       fontFamily: "Raleway",
       fontSize: "1.75rem",
-      color: arcBlue,
+      color: dasBlue,
       fontWeight: 700
     },
     h6: {
       fontWeight: 500,
       fontFamily: "Raleway",
-      color: arcBlue
+      color: dasBlue
     },
     subtitle1: {
       fontSize: "1.25rem",
       fontWeight: 300,
-      color: arcGrey
+      color: dasGrey
     },
     subtitle2: {
       color: "white",
@@ -66,19 +66,19 @@ export default createMuiTheme({
     },
     body1: {
       fontSize: "1.25rem",
-      color: arcGrey,
+      color: dasGrey,
       fontWeight: 300
     },
     caption: {
       fontSize: "1rem",
       fontWeight: 300,
-      color: arcGrey
+      color: dasGrey
     },
     learnButton: {
-      borderColor: arcBlue,
+      borderColor: dasBlue,
       borderWidth: 2,
       textTransform: "none",
-      color: arcBlue,
+      color: dasBlue,
       borderRadius: 50,
       fontFamily: "Roboto",
       fontWeight: "bold"
@@ -87,23 +87,32 @@ export default createMuiTheme({
   overrides: {
     MuiInputLabel: {
       root: {
-        color: arcBlue,
+        color: dasBlue,
         fontSize: "1rem"
       }
     },
     MuiInput: {
       root: {
-        color: arcGrey,
+        color: dasGrey,
         fontWeight: 300
       },
       underline: {
         "&:before": {
-          borderBottom: `2px solid ${arcBlue}`
+          borderBottom: `2px solid ${dasBlue}`
         },
         "&:hover:not($disabled):not($focused):not($error):before": {
-          borderBottom: `2px solid ${arcBlue}`
+          borderBottom: `2px solid ${dasBlue}`
         }
       }
+    },
+    MuiFormControlLabel: {
+      label: {
+        color: dasBlue,
+        fontWeight: 700,
+      },
+      labelPlacementStart: {
+        marginLeft: 0,
+      },
     }
   }
 });
