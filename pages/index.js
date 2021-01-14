@@ -7,21 +7,101 @@ import {
   Switch,
   FormGroup,
   FormControlLabel,
+  Table,
+  TableBody,
+  TableHead,
+  TableContainer,
+  TableRow,
+  TableCell,
+  Paper,
 } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
+import FilterListIcon from "@material-ui/icons/FilterList";
 
 const useStyles = makeStyles((theme) => ({}));
+
+// Data Functions
+function createData(
+  name,
+  date,
+  service,
+  features,
+  complexity,
+  platforms,
+  users,
+  total
+) {
+  return { name, date, service, features, complexity, platforms, users, total };
+}
 
 export default function ProjectManager() {
   const classes = useStyles();
   const theme = useTheme();
 
-  // States
+  // STATES: Switch
   const [websiteChecked, setWebsiteChecked] = useState(false);
   const [iOSChecked, setiOSChecked] = useState(false);
   const [androidChecked, setAndroidChecked] = useState(false);
   const [softwareChecked, setSoftwareChecked] = useState(false);
+
+  // STATES: Table
+  const [rows, setRows] = useState([
+    createData(
+      "Billy Bob",
+      "3/6/21",
+      "Website",
+      "E-Commerce",
+      "N/A",
+      "N/A",
+      "N/A",
+      "$1500"
+    ),
+    createData(
+      "Bill Gates",
+      "10/17/20",
+      "Custom Software",
+      "GPS, Push Notifications, Users/Authentication, File Transfer",
+      "Medium",
+      "Web Application",
+      "0-10",
+      "$1600",
+      true
+    ),
+    createData(
+      "Steve Jobs",
+      "2/13/20",
+      "Custom Software",
+      "Photo/Video, File Transfer, Users/Authentication",
+      "Low",
+      "Web Application",
+      "10-100",
+      "$1250",
+      true
+    ),
+    createData(
+      "Stan Smith",
+      "2/13/20",
+      "Mobile App",
+      "Photo/Video, File Transfer, Users/Authentication",
+      "Low",
+      "iOS, Android",
+      "10-100",
+      "$1250",
+      true
+    ),
+    createData(
+      "Albert Einstein",
+      "2/13/20",
+      "Mobile App",
+      "Photo/Video, File Transfer, Users/Authentication",
+      "Low",
+      "Android",
+      "10-100",
+      "$1250",
+      true
+    ),
+  ]);
 
   return (
     <Grid container direction="column">
@@ -37,21 +117,20 @@ export default function ProjectManager() {
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <AddIcon color="primary" />
+                <AddIcon color="primary" style={{ fontSize: 30 }} />
               </InputAdornment>
             ),
           }}
         />
       </Grid>
 
-      <Grid item style={{marginLeft: "5em", marginTop: "2em"}}>
+      <Grid item style={{ marginLeft: "5em", marginTop: "2em" }}>
         <FormGroup row>
-
           {/*---Websites Switch---*/}
           <FormControlLabel
             label="Websites"
             labelPlacement="start"
-            style={{marginRight: "5em"}}
+            style={{ marginRight: "5em" }}
             control={
               <Switch
                 checked={websiteChecked}
@@ -65,7 +144,7 @@ export default function ProjectManager() {
           <FormControlLabel
             label="iOS Apps"
             labelPlacement="start"
-            style={{marginRight: "5em"}}
+            style={{ marginRight: "5em" }}
             control={
               <Switch
                 checked={iOSChecked}
@@ -79,7 +158,7 @@ export default function ProjectManager() {
           <FormControlLabel
             label="Android Apps"
             labelPlacement="start"
-            style={{marginRight: "5em"}}
+            style={{ marginRight: "5em" }}
             control={
               <Switch
                 checked={androidChecked}
@@ -102,6 +181,45 @@ export default function ProjectManager() {
             }
           />
         </FormGroup>
+      </Grid>
+
+      {/*----- Data Table -----*/}
+      <Grid item container justify="flex-end" style={{ marginTop: "5em" }}>
+        <Grid item style={{ marginRight: 75 }}>
+          <FilterListIcon color="secondary" style={{ fontSize: 50 }} />
+        </Grid>
+      </Grid>
+      <Grid item style={{marginBottom: "15em"}}>
+        <TableContainer component={Paper} elevation={0}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell align="center">Name</TableCell>
+                <TableCell align="center">Date</TableCell>
+                <TableCell align="center">Service</TableCell>
+                <TableCell align="center">Features</TableCell>
+                <TableCell align="center">Complexity</TableCell>
+                <TableCell align="center">Platforms</TableCell>
+                <TableCell align="center">Users</TableCell>
+                <TableCell align="center">Total</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell align="center">{row.name}</TableCell>
+                  <TableCell align="center">{row.date}</TableCell>
+                  <TableCell align="center">{row.service}</TableCell>
+                  <TableCell align="center" style={{maxWidth: "5em"}}>{row.features}</TableCell>
+                  <TableCell align="center">{row.complexity}</TableCell>
+                  <TableCell align="center">{row.platforms}</TableCell>
+                  <TableCell align="center">{row.users}</TableCell>
+                  <TableCell align="center">{row.total}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Grid>
     </Grid>
   );

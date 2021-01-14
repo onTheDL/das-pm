@@ -113,6 +113,20 @@ export default createMuiTheme({
       labelPlacementStart: {
         marginLeft: 0,
       },
-    }
+    },
+    MuiTableCell: {
+      head: {
+        fontSize: "1rem",
+        fontWeight: 700,
+        color: dasBlue,
+        borderColor: dasBlue,
+        borderWidth: 2,
+      },
+      body: {
+        borderColor: dasBlue,
+        color: dasGrey,
+        borderWidth: 2,
+      }
+    },
   }
 });
