@@ -16,6 +16,10 @@ import {
   Paper,
   Dialog,
   DialogContent,
+  RadioGroup,
+  Radio,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
@@ -26,7 +30,14 @@ import {
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 
-const useStyles = makeStyles((theme) => ({}));
+const useStyles = makeStyles((theme) => ({
+  service: {
+    fontWeight: 300,
+  },
+  users: {
+    marginRight: 0,
+  },
+}));
 
 // Data Functions
 function createData(
@@ -52,11 +63,26 @@ export default function ProjectManager() {
   const [androidChecked, setAndroidChecked] = useState(false);
   const [softwareChecked, setSoftwareChecked] = useState(false);
 
+  const platformOptions = ["Web", "iOS", "Android"];
+  const featureOptions = [
+    "Photo/Video",
+    "GPS",
+    "File Transfer",
+    "Users/Authentication",
+    "Biometrics",
+    "Push Notifications",
+  ];
+
   // Dialog State (for adding new projects)
   const [dialogOpen, setDialogOpen] = useState(false);
   const [name, setName] = useState("");
   const [date, setDate] = useState(new Date());
   const [total, setTotal] = useState("");
+  const [service, setService] = useState("");
+  const [complexity, setComplexity] = useState("");
+  const [users, setUsers] = useState("");
+  const [platforms, setPlatforms] = useState([]);
+  const [features, setFeatures] = useState([]);
 
   // Table State
   const [rows, setRows] = useState([
@@ -259,7 +285,6 @@ export default function ProjectManager() {
 
           <DialogContent>
             <Grid container justify="space-between">
-
               {/*--- Name TextField ---*/}
               <Grid item>
                 <Grid item container direction="column" sm>
@@ -268,8 +293,72 @@ export default function ProjectManager() {
                       label="Name"
                       id="name"
                       value={name}
+                      fullWidth
                       onChange={(e) => setName(e.target.value)}
                     />
+                  </Grid>
+
+                  {/*--- Service Radio Group ---*/}
+                  <Grid
+                    item
+                    container
+                    direction="column"
+                    style={{ marginTop: "5em" }}
+                  >
+                    <Grid item>
+                      <Typography variant="h4">Service</Typography>
+                    </Grid>
+                    <Grid item>
+                      <RadioGroup
+                        aria-label="service"
+                        name="service"
+                        value={service}
+                        onChange={(e) => setService(e.target.value)}
+                      >
+                        <FormControlLabel
+                          value="website"
+                          label="Website"
+                          control={<Radio />}
+                          classes={{ label: classes.service }}
+                        />
+
+                        <FormControlLabel
+                          value="mobile app"
+                          label="Mobile App"
+                          control={<Radio />}
+                          classes={{ label: classes.service }}
+                        />
+
+                        <FormControlLabel
+                          value="custom software"
+                          label="Custom Software"
+                          control={<Radio />}
+                          classes={{ label: classes.service }}
+                        />
+                      </RadioGroup>
+                    </Grid>
+
+                    {/*--- Platforms Select Component ---*/}
+                    <Grid item style={{ marginTop: "5em" }}>
+                      <Select
+                        labelId="platforms"
+                        id="platforms"
+                        style={{ width: "12em" }}
+                        multiple
+                        displayEmpty
+                        renderValue={
+                          platforms.length > 0 ? undefined : () => "Platforms"
+                        }
+                        value={platforms}
+                        onChange={(event) => setPlatforms(event.target.value)}
+                      >
+                        {platformOptions.map((option) => (
+                          <MenuItem key={option} value={option}>
+                            {option}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
@@ -281,6 +370,7 @@ export default function ProjectManager() {
                   container
                   direction="column"
                   sm
+                  alignItems="center"
                   style={{ marginTop: 16 }}
                 >
                   <Grid item>
@@ -290,22 +380,151 @@ export default function ProjectManager() {
                       onChange={(newDate) => setDate(newDate)}
                     />
                   </Grid>
+
+                  {/*--- Complexity Radio Group ---*/}
+                  <Grid item>
+                    <Grid
+                      item
+                      container
+                      direction="column"
+                      style={{ marginTop: "5em" }}
+                    >
+                      <Grid item>
+                        <Typography variant="h4">Complexity</Typography>
+                      </Grid>
+                      <Grid item>
+                        <RadioGroup
+                          aria-label="complexity"
+                          name="complexity"
+                          value={complexity}
+                          onChange={(e) => setComplexity(e.target.value)}
+                        >
+                          <FormControlLabel
+                            value="low"
+                            label="Low"
+                            control={<Radio />}
+                            classes={{ label: classes.service }}
+                          />
+
+                          <FormControlLabel
+                            value="medium"
+                            label="Medium"
+                            control={<Radio />}
+                            classes={{ label: classes.service }}
+                          />
+
+                          <FormControlLabel
+                            value="high"
+                            label="High"
+                            control={<Radio />}
+                            classes={{ label: classes.service }}
+                          />
+                        </RadioGroup>
+                      </Grid>
+                    </Grid>
+                  </Grid>
                 </Grid>
               </Grid>
 
               {/*--- Total TextField ---*/}
               <Grid item>
-                <Grid item container direction="column" sm>
+                <Grid
+                  item
+                  container
+                  direction="column"
+                  sm
+                  alignItems="flex-end"
+                >
                   <Grid item>
                     <TextField
-                      InputProps={{startAdornment: <InputAdornment position="start">$</InputAdornment>}}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">$</InputAdornment>
+                        ),
+                      }}
                       value={total}
                       id={total}
                       label="Total"
                       onChange={(e) => setTotal(e.target.value)}
                     />
                   </Grid>
+
+                  {/*--- Users Radio Group ---*/}
+                  <Grid item>
+                    <Grid
+                      item
+                      container
+                      direction="column"
+                      style={{ marginTop: "5em" }}
+                    >
+                      <Grid item>
+                        <Typography variant="h4">Users</Typography>
+                      </Grid>
+                      <Grid item>
+                        <RadioGroup
+                          aria-label="users"
+                          name="users"
+                          value={users}
+                          onChange={(e) => setUsers(e.target.value)}
+                        >
+                          <FormControlLabel
+                            value="0-10"
+                            label="0-10"
+                            control={<Radio />}
+                            classes={{
+                              label: classes.service,
+                              root: classes.users,
+                            }}
+                          />
+
+                          <FormControlLabel
+                            value="10-100"
+                            label="10-100"
+                            control={<Radio />}
+                            classes={{
+                              label: classes.service,
+                              root: classes.users,
+                            }}
+                          />
+
+                          <FormControlLabel
+                            value="100+"
+                            label="100+"
+                            control={<Radio />}
+                            classes={{
+                              label: classes.service,
+                              root: classes.users,
+                            }}
+                          />
+                        </RadioGroup>
+                      </Grid>
+                    </Grid>
+                  </Grid>
                 </Grid>
+
+                {/*--- Features Select Component ---*/}
+                <Grid item style={{ marginTop: "5em" }}>
+                  <Select
+                    labelId="features"
+                    id="features"
+                    MenuProps={{ style: { zIndex: 1302 } }}
+                    style={{ width: "12em" }}
+                    multiple
+                    displayEmpty
+                    renderValue={
+                      features.length > 0 ? undefined : () => "Features"
+                    }
+                    value={features}
+                    onChange={(event) => setFeatures(event.target.value)}
+                  >
+                    {featureOptions.map((option) => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </Grid>
+                
               </Grid>
             </Grid>
           </DialogContent>
