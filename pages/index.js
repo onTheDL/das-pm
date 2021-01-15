@@ -20,6 +20,7 @@ import {
   Radio,
   Select,
   MenuItem,
+  Button,
 } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
@@ -29,6 +30,7 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
+import { format } from "date-fns";
 
 const useStyles = makeStyles((theme) => ({
   service: {
@@ -36,6 +38,15 @@ const useStyles = makeStyles((theme) => ({
   },
   users: {
     marginRight: 0,
+  },
+  button: {
+    color: "#fff",
+    backgroundColor: theme.palette.common.orange,
+    borderRadius: 50,
+    textTransform: "none",
+    "&:hover": {
+      backgroundColor: theme.palette.secondary.light,
+    },
   },
 }));
 
@@ -141,6 +152,34 @@ export default function ProjectManager() {
       true
     ),
   ]);
+
+  // convert features and platforms from string to array
+  // convert date from object to string
+  const addProject = () => {
+    setRows([
+      ...rows,
+      createData(
+        name,
+        format(date, "MM/dd/yy"),
+        service,
+        features.join(", "),
+        complexity,
+        platforms.join(", "),
+        users,
+        "$" + total
+      ),
+    ]);
+
+    setDialogOpen(false);
+    setName("");
+    setDate(new Date());
+    setTotal("");
+    setService("");
+    setComplexity("");
+    setUsers("");
+    setPlatforms([]);
+    setFeatures([]);
+  };
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -524,7 +563,40 @@ export default function ProjectManager() {
                     ))}
                   </Select>
                 </Grid>
-                
+              </Grid>
+            </Grid>
+
+            {/*--- Add New Project Component ---*/}
+            <Grid container justify="center" style={{ marginTop: "5em" }}>
+              <Grid item>
+                <Button
+                  color="primary"
+                  style={{ fontWeight: 300 }}
+                  onClick={() => setDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  className={classes.button}
+                  onClick={addProject}
+                  disabled={
+                    service === "website"
+                      ? name.length === 0 ||
+                        total.length === 0
+                      : name.length === 0 ||
+                        total.length === 0 ||
+                        features.length === 0 ||
+                        users.length === 0 ||
+                        complexity.length === 0 ||
+                        platforms.length === 0 ||
+                        service.length === 0
+                  }
+                >
+                  Add Project +
+                </Button>
               </Grid>
             </Grid>
           </DialogContent>
