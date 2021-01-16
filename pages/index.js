@@ -6,6 +6,7 @@ import {
   InputAdornment,
   Switch,
   FormGroup,
+  FormControl,
   FormControlLabel,
   Table,
   TableBody,
@@ -75,7 +76,7 @@ export default function ProjectManager() {
   const [softwareChecked, setSoftwareChecked] = useState(false);
 
   const platformOptions = ["Web", "iOS", "Android"];
-  const featureOptions = [
+  let featureOptions = [
     "Photo/Video",
     "GPS",
     "File Transfer",
@@ -83,6 +84,8 @@ export default function ProjectManager() {
     "Biometrics",
     "Push Notifications",
   ];
+
+  let websiteOptions = ["Basic", "Interactive", "E-Commerce"];
 
   // Dialog State (for adding new projects)
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -163,9 +166,9 @@ export default function ProjectManager() {
         format(date, "MM/dd/yy"),
         service,
         features.join(", "),
-        complexity,
-        platforms.join(", "),
-        users,
+        service === "Website" ? "N/A" : complexity,
+        service === "Website" ? "N/A" : platforms.join(", "),
+        service === "Website" ? "N/A" : users,
         "$" + total
       ),
     ]);
@@ -352,24 +355,27 @@ export default function ProjectManager() {
                         aria-label="service"
                         name="service"
                         value={service}
-                        onChange={(e) => setService(e.target.value)}
+                        onChange={(e) => {
+                          setService(e.target.value);
+                          setFeatures([]);
+                        }}
                       >
                         <FormControlLabel
-                          value="website"
+                          value="Website"
                           label="Website"
                           control={<Radio />}
                           classes={{ label: classes.service }}
                         />
 
                         <FormControlLabel
-                          value="mobile app"
+                          value="Mobile app"
                           label="Mobile App"
                           control={<Radio />}
                           classes={{ label: classes.service }}
                         />
 
                         <FormControlLabel
-                          value="custom software"
+                          value="Custom software"
                           label="Custom Software"
                           control={<Radio />}
                           classes={{ label: classes.service }}
@@ -390,6 +396,7 @@ export default function ProjectManager() {
                         }
                         value={platforms}
                         onChange={(event) => setPlatforms(event.target.value)}
+                        disabled={service === "Website"}
                       >
                         {platformOptions.map((option) => (
                           <MenuItem key={option} value={option}>
@@ -439,6 +446,7 @@ export default function ProjectManager() {
                           onChange={(e) => setComplexity(e.target.value)}
                         >
                           <FormControlLabel
+                            disabled={service === "Website"}
                             value="low"
                             label="Low"
                             control={<Radio />}
@@ -446,6 +454,7 @@ export default function ProjectManager() {
                           />
 
                           <FormControlLabel
+                            disabled={service === "Website"}
                             value="medium"
                             label="Medium"
                             control={<Radio />}
@@ -453,6 +462,7 @@ export default function ProjectManager() {
                           />
 
                           <FormControlLabel
+                            disabled={service === "Website"}
                             value="high"
                             label="High"
                             control={<Radio />}
@@ -507,6 +517,7 @@ export default function ProjectManager() {
                           onChange={(e) => setUsers(e.target.value)}
                         >
                           <FormControlLabel
+                            disabled={service === "Website"}
                             value="0-10"
                             label="0-10"
                             control={<Radio />}
@@ -517,6 +528,7 @@ export default function ProjectManager() {
                           />
 
                           <FormControlLabel
+                            disabled={service === "Website"}
                             value="10-100"
                             label="10-100"
                             control={<Radio />}
@@ -527,6 +539,7 @@ export default function ProjectManager() {
                           />
 
                           <FormControlLabel
+                            disabled={service === "Website"}
                             value="100+"
                             label="100+"
                             control={<Radio />}
@@ -548,14 +561,17 @@ export default function ProjectManager() {
                     id="features"
                     MenuProps={{ style: { zIndex: 1302 } }}
                     style={{ width: "12em" }}
-                    multiple
                     displayEmpty
+                    multiple
                     renderValue={
                       features.length > 0 ? undefined : () => "Features"
                     }
                     value={features}
                     onChange={(event) => setFeatures(event.target.value)}
                   >
+                    {service === "Website"
+                      ? (featureOptions = websiteOptions)
+                      : null}
                     {featureOptions.map((option) => (
                       <MenuItem key={option} value={option}>
                         {option}
@@ -583,9 +599,11 @@ export default function ProjectManager() {
                   className={classes.button}
                   onClick={addProject}
                   disabled={
-                    service === "website"
+                    service === "Website"
                       ? name.length === 0 ||
-                        total.length === 0
+                        total.length === 0 ||
+                        features.length === 0 ||
+                        features.length > 1
                       : name.length === 0 ||
                         total.length === 0 ||
                         features.length === 0 ||
