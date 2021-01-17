@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import { lighten, makeStyles } from "@material-ui/core/styles";
@@ -20,6 +20,8 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
+import Snackbar from "@material-ui/core/Snackbar";
+import Button from "@material-ui/core/Button";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -141,18 +143,38 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
-  const { numSelected, selected, setSelected, rows, setRows, } = props;
+  const { numSelected, selected, setSelected, rows, setRows } = props;
+  const [undo, setUndo] = useState([]);
+  const [alert, setAlert] = useState({
+    open: false,
+    backgroundColor: "#FF3232",
+    message: "Row deleted!",
+  });
 
   const handleDelete = () => {
-    const newRows = [...rows]
-    const selectedRows = newRows.filter(row => selected.includes(row.name))
+    const newRows = [...rows];
+    const selectedRows = newRows.filter((row) => selected.includes(row.name));
 
-    // Do not delete selectedRows, but hide them. 
+    // Do not delete selectedRows, but hide them.
     // Add ability to undo delete.
-    selectedRows.map(row => row.search = false)
-    setRows(newRows)
-    
-  }
+    selectedRows.map((row) => (row.search = false));
+    setRows(newRows);
+
+    setSelected([]);
+    setAlert({ ...alert, open: true });
+    setUndo(selectedRows);
+  };
+
+  const handleUndo = () => {
+    setAlert({ ...alert, open: false });
+    const newRows = [...rows];
+    const redo = [...undo];
+    redo.map((row) => (row.search = true));
+
+    // Merge redo with newRows
+    Array.prototype.push.apply(newRows, ...redo);
+    setRows(newRows);
+  };
 
   return (
     <Toolbar
@@ -192,6 +214,27 @@ const EnhancedTableToolbar = (props) => {
           </IconButton>
         </Tooltip>
       )}
+
+      <Snackbar
+        open={alert.open}
+        message={alert.message}
+        ContentProps={{ style: { backgroundColor: alert.backgroundColor } }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        onClose={(event, reason) => {
+          if (reason === "clickaway") {
+            setAlert({ ...alert, open: false });
+            const newRows = [...rows];
+            const names = [...undo.map((row) => row.name)];
+
+            setRows(newRows.filter((row) => !names.includes(row.name)));
+          }
+        }}
+        action={
+          <Button style={{ color: "#fff" }} onClick={handleUndo}>
+            Undo
+          </Button>
+        }
+      />
     </Toolbar>
   );
 };
@@ -280,7 +323,13 @@ export default function EnhancedTable({ rows, setRows, page, setPage }) {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper} elevation={0}>
-        <EnhancedTableToolbar selected={selected} setSelected={setSelected} numSelected={selected.length} rows={rows} setRows={setRows} />
+        <EnhancedTableToolbar
+          selected={selected}
+          setSelected={setSelected}
+          numSelected={selected.length}
+          rows={rows}
+          setRows={setRows}
+        />
         <TableContainer>
           <Table
             className={classes.table}
