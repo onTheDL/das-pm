@@ -32,6 +32,7 @@ import {
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import { format } from "date-fns";
+import EnhancedTable from '../src/ui/EnhancedTable'
 
 const useStyles = makeStyles((theme) => ({
   service: {
@@ -60,9 +61,20 @@ function createData(
   complexity,
   platforms,
   users,
-  total
+  total,
+  search
 ) {
-  return { name, date, service, features, complexity, platforms, users, total };
+  return {
+    name,
+    date,
+    service,
+    features,
+    complexity,
+    platforms,
+    users,
+    total,
+    search,
+  };
 }
 
 export default function ProjectManager() {
@@ -85,19 +97,6 @@ export default function ProjectManager() {
     "Push Notifications",
   ];
 
-  let websiteOptions = ["Basic", "Interactive", "E-Commerce"];
-
-  // Dialog State (for adding new projects)
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [date, setDate] = useState(new Date());
-  const [total, setTotal] = useState("");
-  const [service, setService] = useState("");
-  const [complexity, setComplexity] = useState("");
-  const [users, setUsers] = useState("");
-  const [platforms, setPlatforms] = useState([]);
-  const [features, setFeatures] = useState([]);
-
   // Table State
   const [rows, setRows] = useState([
     createData(
@@ -108,7 +107,8 @@ export default function ProjectManager() {
       "N/A",
       "N/A",
       "N/A",
-      "$1500"
+      "$1500",
+      true
     ),
     createData(
       "Bill Gates",
@@ -156,6 +156,22 @@ export default function ProjectManager() {
     ),
   ]);
 
+  let websiteOptions = ["Basic", "Interactive", "E-Commerce"];
+
+  // Dialog States (for adding new projects)
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [date, setDate] = useState(new Date());
+  const [total, setTotal] = useState("");
+  const [service, setService] = useState("");
+  const [complexity, setComplexity] = useState("");
+  const [users, setUsers] = useState("");
+  const [platforms, setPlatforms] = useState([]);
+  const [features, setFeatures] = useState([]);
+
+  // Search States
+  const [search, setSearch] = useState("");
+
   // convert features and platforms from string to array
   // convert date from object to string
   const addProject = () => {
@@ -169,7 +185,8 @@ export default function ProjectManager() {
         service === "Website" ? "N/A" : complexity,
         service === "Website" ? "N/A" : platforms.join(", "),
         service === "Website" ? "N/A" : users,
-        "$" + total
+        "$" + total,
+        true
       ),
     ]);
 
@@ -184,6 +201,28 @@ export default function ProjectManager() {
     setFeatures([]);
   };
 
+  //Search fxn
+  const handleSearch = (e) => {
+    let query = e.target.value;
+    setSearch(query);
+    const rowData = rows.map((row) =>
+      Object.values(row).filter((option) => option !== true && option !== false)
+    );
+
+    const matches = rowData.map((row) =>
+      row.map((option) => option.toLowerCase().includes(query.toLowerCase()))
+    );
+
+    const newRows = [...rows];
+    matches.map((row, index) =>
+      row.includes(true)
+        ? newRows[index].search = true
+        : newRows[index].search = false
+    );
+
+    setRows(newRows);
+  };
+
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Grid container direction="column">
@@ -195,6 +234,8 @@ export default function ProjectManager() {
         <Grid item>
           <TextField
             placeholder="Search project details or create a new entry"
+            value={search}
+            onChange={handleSearch}
             style={{ width: "35em", marginLeft: "5em" }}
             InputProps={{
               endAdornment: (
@@ -277,7 +318,7 @@ export default function ProjectManager() {
         </Grid>
         <Grid item style={{ marginBottom: "15em" }}>
           <TableContainer component={Paper} elevation={0}>
-            <Table>
+            {/* <Table>
               <TableHead>
                 <TableRow>
                   <TableCell align="center">Name</TableCell>
@@ -291,22 +332,27 @@ export default function ProjectManager() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row, index) => (
-                  <TableRow key={index}>
-                    <TableCell align="center">{row.name}</TableCell>
-                    <TableCell align="center">{row.date}</TableCell>
-                    <TableCell align="center">{row.service}</TableCell>
-                    <TableCell align="center" style={{ maxWidth: "5em" }}>
-                      {row.features}
-                    </TableCell>
-                    <TableCell align="center">{row.complexity}</TableCell>
-                    <TableCell align="center">{row.platforms}</TableCell>
-                    <TableCell align="center">{row.users}</TableCell>
-                    <TableCell align="center">{row.total}</TableCell>
-                  </TableRow>
-                ))}
+                {rows
+                  .filter((row) => row.search)
+                  .map((row, index) => (
+                    <TableRow key={index}>
+                      <TableCell align="center">{row.name}</TableCell>
+                      <TableCell align="center">{row.date}</TableCell>
+                      <TableCell align="center">{row.service}</TableCell>
+                      <TableCell align="center" style={{ maxWidth: "5em" }}>
+                        {row.features}
+                      </TableCell>
+                      <TableCell align="center">{row.complexity}</TableCell>
+                      <TableCell align="center">{row.platforms}</TableCell>
+                      <TableCell align="center">{row.users}</TableCell>
+                      <TableCell align="center">{row.total}</TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
-            </Table>
+            </Table> */}
+
+            <EnhancedTable rows={rows} />
+
           </TableContainer>
         </Grid>
 
