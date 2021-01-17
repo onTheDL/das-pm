@@ -311,12 +311,7 @@ export default function ProjectManager() {
         </Grid>
 
         {/*----- Data Table -----*/}
-        <Grid item container justify="flex-end" style={{ marginTop: "5em" }}>
-          <Grid item style={{ marginRight: 75 }}>
-            <FilterListIcon color="secondary" style={{ fontSize: 50 }} />
-          </Grid>
-        </Grid>
-        <Grid item style={{ marginBottom: "15em" }}>
+        <Grid item style={{ marginBottom: "15em", marginTop: "5em" }}>
           <TableContainer component={Paper} elevation={0}>
             {/* <Table>
               <TableHead>
