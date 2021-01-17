@@ -372,7 +372,7 @@ export default function ProjectManager() {
               </TableBody>
             </Table> */}
 
-            <EnhancedTable rows={rows} page={page} setPage={setPage} />
+            <EnhancedTable rows={rows} setRows={setRows} page={page} setPage={setPage} />
 
           </TableContainer>
         </Grid>
