@@ -158,18 +158,26 @@ const EnhancedTableToolbar = (props) => {
         >
           {numSelected} selected
         </Typography>
-      ) : null}
+      ) : (
+        <Typography
+          className={classes.title}
+          color="inherit"
+          variant="subtitle1"
+        >
+          {null}
+        </Typography>
+      )}
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton aria-label="delete">
-            <DeleteIcon style={{fontSize: 30}} color="primary" />
+            <DeleteIcon style={{ fontSize: 30 }} color="primary" />
           </IconButton>
         </Tooltip>
       ) : (
         <Tooltip title="Filter list">
           <IconButton aria-label="filter list">
-            <FilterListIcon style={{fontSize: 50}} color= "secondary"/>
+            <FilterListIcon style={{ fontSize: 50 }} color="secondary" />
           </IconButton>
         </Tooltip>
       )}
@@ -205,12 +213,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EnhancedTable({ rows }) {
+export default function EnhancedTable({ rows, page, setPage }) {
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
   const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (event, property) => {
@@ -280,7 +287,10 @@ export default function EnhancedTable({ rows }) {
               rowCount={rows.length}
             />
             <TableBody>
-              {stableSort(rows.filter(row => row.search), getComparator(order, orderBy))
+              {stableSort(
+                rows.filter((row) => row.search),
+                getComparator(order, orderBy)
+              )
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.name);
@@ -329,7 +339,7 @@ export default function EnhancedTable({ rows }) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={rows.filter((row) => row.search).length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}

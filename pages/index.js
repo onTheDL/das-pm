@@ -154,7 +154,32 @@ export default function ProjectManager() {
       "$1250",
       true
     ),
+    createData(
+      "Fat Albert",
+      "2/13/20",
+      "Mobile App",
+      "Photo/Video, File Transfer, Users/Authentication",
+      "Low",
+      "Android",
+      "10-100",
+      "$1250",
+      true
+    ),
+    createData(
+      "Dizzy",
+      "2/13/20",
+      "Mobile App",
+      "Photo/Video, File Transfer, Users/Authentication",
+      "Low",
+      "Android",
+      "10-100",
+      "$1250",
+      true
+    ),
   ]);
+
+
+  const [page, setPage] = React.useState(0);
 
   let websiteOptions = ["Basic", "Interactive", "E-Commerce"];
 
@@ -221,6 +246,7 @@ export default function ProjectManager() {
     );
 
     setRows(newRows);
+    setPage(0)
   };
 
   return (
@@ -311,7 +337,7 @@ export default function ProjectManager() {
         </Grid>
 
         {/*----- Data Table -----*/}
-        <Grid item style={{ marginBottom: "15em", marginTop: "5em" }}>
+        <Grid item style={{ marginBottom: "35em", marginTop: "5em" }}>
           <TableContainer component={Paper} elevation={0}>
             {/* <Table>
               <TableHead>
@@ -346,7 +372,7 @@ export default function ProjectManager() {
               </TableBody>
             </Table> */}
 
-            <EnhancedTable rows={rows} />
+            <EnhancedTable rows={rows} page={page} setPage={setPage} />
 
           </TableContainer>
         </Grid>
