@@ -32,7 +32,7 @@ import {
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import { format } from "date-fns";
-import EnhancedTable from '../src/ui/EnhancedTable'
+import EnhancedTable from "../src/ui/EnhancedTable";
 
 const useStyles = makeStyles((theme) => ({
   service: {
@@ -178,7 +178,6 @@ export default function ProjectManager() {
     ),
   ]);
 
-
   const [page, setPage] = React.useState(0);
 
   let websiteOptions = ["Basic", "Interactive", "E-Commerce"];
@@ -241,12 +240,12 @@ export default function ProjectManager() {
     const newRows = [...rows];
     matches.map((row, index) =>
       row.includes(true)
-        ? newRows[index].search = true
-        : newRows[index].search = false
+        ? (newRows[index].search = true)
+        : (newRows[index].search = false)
     );
 
     setRows(newRows);
-    setPage(0)
+    setPage(0);
   };
 
   return (
@@ -372,8 +371,16 @@ export default function ProjectManager() {
               </TableBody>
             </Table> */}
 
-            <EnhancedTable rows={rows} setRows={setRows} page={page} setPage={setPage} />
-
+            <EnhancedTable
+              rows={rows}
+              setRows={setRows}
+              page={page}
+              setPage={setPage}
+              websiteChecked={websiteChecked}
+              iOSChecked={iOSChecked}
+              androidChecked={androidChecked}
+              softwareChecked={softwareChecked}
+            />
           </TableContainer>
         </Grid>
 

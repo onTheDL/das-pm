@@ -143,7 +143,9 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
+
   const { numSelected, selected, setSelected, rows, setRows } = props;
+
   const [undo, setUndo] = useState([]);
   const [alert, setAlert] = useState({
     open: false,
@@ -267,7 +269,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EnhancedTable({ rows, setRows, page, setPage }) {
+export default function EnhancedTable({
+  rows,
+  setRows,
+  page,
+  setPage,
+  websiteChecked,
+  iOSChecked,
+  androidChecked,
+  softwareChecked,
+}) {
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
@@ -320,6 +331,30 @@ export default function EnhancedTable({ rows, setRows, page, setPage }) {
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
+  const switchFilters = () => {
+    const websites = rows.filter(row => websiteChecked ? row.service === "Website" : null)
+
+    const iOSApps = rows.filter(row => iOSChecked ? row.platforms.includes("iOS") : null)
+
+    const androidApps = rows.filter(row => androidChecked ? row.platforms.includes('Android') : null)
+
+    const customSoftware = rows.filter(row => softwareChecked ? row.service === "Custom Software" : null)
+
+    if (!websiteChecked && !iOSChecked && !androidChecked && !softwareChecked) {
+      return rows
+    } else {
+      // Filtering unique rows
+      let newRows = websites.concat(iOSApps.filter(item => websites.indexOf(item) < 0))
+
+      let newRows2 = newRows.concat(androidApps.filter(item => newRows.indexOf(item) < 0))
+
+      let newRows3 = newRows2.concat(customSoftware.filter(item => newRows2.indexOf(item) < 0))
+
+      return newRows3
+    }
+
+  }
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper} elevation={0}>
@@ -348,7 +383,7 @@ export default function EnhancedTable({ rows, setRows, page, setPage }) {
             />
             <TableBody>
               {stableSort(
-                rows.filter((row) => row.search),
+                switchFilters().filter((row) => row.search),
                 getComparator(order, orderBy)
               )
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
