@@ -594,7 +594,7 @@ export default function EnhancedTable({
                       </TableCell>
                       <TableCell align="center">{row.date}</TableCell>
                       <TableCell align="center">{row.service}</TableCell>
-                      <TableCell align="center" style={{ maxWidth: "5em" }}>
+                      <TableCell align="center" style={{ width: "5em" }}>
                         {row.features}
                       </TableCell>
                       <TableCell align="center">{row.complexity}</TableCell>
