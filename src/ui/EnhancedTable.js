@@ -26,6 +26,8 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
+import Chip from "@material-ui/core/Chip";
+import Grid from "@material-ui/core/Grid";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -164,12 +166,20 @@ const useToolbarStyles = makeStyles((theme) => ({
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
 
-  const { numSelected, selected, setSelected, rows, setRows } = props;
+  const {
+    numSelected,
+    selected,
+    setSelected,
+    rows,
+    setRows,
+    filterPrice,
+    setFilterPrice,
+    totalFilter,
+    setTotalFilter,
+  } = props;
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [openMenu, setOpenMenu] = useState(false);
-  const [totalFilter, setTotalFilter] = useState(">");
-  const [filterPrice, setFilterPrice] = useState("");
 
   const [undo, setUndo] = useState([]);
   const [alert, setAlert] = useState({
@@ -229,15 +239,15 @@ const EnhancedTableToolbar = (props) => {
       );
       setRows(newRows);
     } else {
-      const newRows = [...rows]
-      newRows.map(row => row.search = true)
-      setRows(newRows)
+      const newRows = [...rows];
+      newRows.map((row) => (row.search = true));
+      setRows(newRows);
     }
   };
 
   const filterChange = (operator) => {
-    if (filterPrice !== '') {
-      const newRows = [...rows]
+    if (filterPrice !== "") {
+      const newRows = [...rows];
       newRows.map((row) =>
         eval(
           `${filterPrice} ${
@@ -249,7 +259,7 @@ const EnhancedTableToolbar = (props) => {
       );
       setRows(newRows);
     }
-  }
+  };
 
   return (
     <Toolbar
@@ -391,6 +401,11 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
+  chip: {
+    marginRight: "2em",
+    backgroundColor: theme.palette.common.blue,
+    color: "#fff",
+  },
 }));
 
 export default function EnhancedTable({
@@ -408,6 +423,8 @@ export default function EnhancedTable({
   const [orderBy, setOrderBy] = React.useState("name");
   const [selected, setSelected] = React.useState([]);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [filterPrice, setFilterPrice] = useState("");
+  const [totalFilter, setTotalFilter] = useState(">");
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -492,6 +509,24 @@ export default function EnhancedTable({
     }
   };
 
+  const priceFilters = (switchRows) => {
+    if (filterPrice !== '') {
+      const newRows = [...switchRows]
+      newRows.map((row) =>
+        eval(
+          `${filterPrice} ${
+            totalFilter === "=" ? "===" : totalFilter
+          } ${row.total.slice(1, row.total.length)}`
+        )
+          ? row.search === false ? null : (row.search = true)
+          : (row.search = false)
+      );
+      return newRows
+    } else {
+      return switchRows
+    }
+  }
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper} elevation={0}>
@@ -501,6 +536,10 @@ export default function EnhancedTable({
           numSelected={selected.length}
           rows={rows}
           setRows={setRows}
+          filterPrice={filterPrice}
+          setFilterPrice={setFilterPrice}
+          totalFilter={totalFilter}
+          setTotalFilter={setTotalFilter}
         />
         <TableContainer>
           <Table
@@ -520,7 +559,7 @@ export default function EnhancedTable({
             />
             <TableBody>
               {stableSort(
-                switchFilters().filter((row) => row.search),
+                priceFilters(switchFilters()).filter((row) => row.search),
                 getComparator(order, orderBy)
               )
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -571,12 +610,35 @@ export default function EnhancedTable({
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.filter((row) => row.search).length}
+          count={priceFilters(switchFilters()).filter((row) => row.search).length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
+        <Grid container justify="flex-end">
+          <Grid item>
+            {filterPrice !== "" && (
+              <Chip
+                className={classes.chip}
+                label={
+                  totalFilter === ">"
+                    ? `Less than $${filterPrice}`
+                    : totalFilter === "<"
+                    ? `Greater than $${filterPrice}`
+                    : `Equal to $${filterPrice}`
+                }
+                onDelete={() => {
+                  setFilterPrice("");
+                  const newRows = [...rows];
+                  newRows.map((row) => (row.search = true));
+
+                  setRows(newRows);
+                }}
+              />
+            )}
+          </Grid>
+        </Grid>
       </Paper>
     </div>
   );
