@@ -22,6 +22,7 @@ import {
   Select,
   MenuItem,
   Button,
+  useMediaQuery,
 } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
@@ -225,6 +226,10 @@ export default function ProjectManager() {
     setFeatures([]);
   };
 
+  // Media queries
+  const matchesMD = useMediaQuery(theme.breakpoints.down("md"));
+  const matchesSM = useMediaQuery(theme.breakpoints.down("sm"));
+
   //Search fxn
   const handleSearch = (e) => {
     let query = e.target.value;
@@ -250,8 +255,8 @@ export default function ProjectManager() {
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <Grid container direction="column">
-        <Grid item style={{ marginTop: "2em", marginLeft: "5em" }}>
+      <Grid container direction="column" alignItems={matchesSM ? "center" : undefined} >
+        <Grid item style={{ marginTop: "2em", marginLeft: matchesSM ? 0 : "5em" }}>
           <Typography variant="h1">Projects</Typography>
         </Grid>
 
@@ -261,7 +266,7 @@ export default function ProjectManager() {
             placeholder="Search project details or create a new entry"
             value={search}
             onChange={handleSearch}
-            style={{ width: "35em", marginLeft: "5em" }}
+            style={{ width: matchesSM ? "25em" : "35em", marginLeft: matchesSM ? 0 : "5em" }}
             InputProps={{
               endAdornment: (
                 <InputAdornment
@@ -276,112 +281,93 @@ export default function ProjectManager() {
           />
         </Grid>
 
-        <Grid item style={{ marginLeft: "5em", marginTop: "2em" }}>
+        <Grid item style={{ marginLeft: matchesSM ? 0 : "5em", marginTop: "2em" }}>
           <FormGroup row>
-            {/*---Websites Switch---*/}
-            <FormControlLabel
-              label="Websites"
-              labelPlacement="start"
-              style={{ marginRight: "5em" }}
-              control={
-                <Switch
-                  checked={websiteChecked}
-                  color="primary"
-                  onChange={() => setWebsiteChecked(!websiteChecked)}
+            <Grid container direction={matchesSM ? "column" : "row"} justify={matchesSM ? "center" : undefined}>
+              <Grid item>
+                {/*---Websites Switch---*/}
+                <FormControlLabel
+                  label="Websites"
+                  labelPlacement={matchesSM ? "end" : "start"}
+                  style={{ marginRight: matchesSM ? 0 : "5em" }}
+                  control={
+                    <Switch
+                      checked={websiteChecked}
+                      color="primary"
+                      onChange={() => setWebsiteChecked(!websiteChecked)}
+                    />
+                  }
                 />
-              }
-            />
+              </Grid>
+              <Grid item>
+                {/*---iOS Switch---*/}
+                <FormControlLabel
+                  label="iOS Apps"
+                  labelPlacement={matchesSM ? "end" : "start"}
+                  style={{ marginRight: matchesSM ? 0 : "5em" }}
+                  control={
+                    <Switch
+                      checked={iOSChecked}
+                      color="primary"
+                      onChange={() => setiOSChecked(!iOSChecked)}
+                    />
+                  }
+                />
+              </Grid>
 
-            {/*---iOS Switch---*/}
-            <FormControlLabel
-              label="iOS Apps"
-              labelPlacement="start"
-              style={{ marginRight: "5em" }}
-              control={
-                <Switch
-                  checked={iOSChecked}
-                  color="primary"
-                  onChange={() => setiOSChecked(!iOSChecked)}
+              <Grid item>
+                {/*---Android Switch---*/}
+                <FormControlLabel
+                  label="Android Apps"
+                  labelPlacement={matchesSM ? "end" : "start"}
+                  style={{ marginRight: matchesSM ? 0 : "5em" }}
+                  control={
+                    <Switch
+                      checked={androidChecked}
+                      color="primary"
+                      onChange={() => setAndroidChecked(!androidChecked)}
+                    />
+                  }
                 />
-              }
-            />
+              </Grid>
 
-            {/*---Android Switch---*/}
-            <FormControlLabel
-              label="Android Apps"
-              labelPlacement="start"
-              style={{ marginRight: "5em" }}
-              control={
-                <Switch
-                  checked={androidChecked}
-                  color="primary"
-                  onChange={() => setAndroidChecked(!androidChecked)}
+              <Grid item>
+                {/*---Software Switch---*/}
+                <FormControlLabel
+                  label="Custom Software"
+                  labelPlacement={matchesSM ? "end" : "start"}
+                  control={
+                    <Switch
+                      checked={softwareChecked}
+                      color="primary"
+                      onChange={() => setSoftwareChecked(!softwareChecked)}
+                    />
+                  }
                 />
-              }
-            />
-
-            {/*---Software Switch---*/}
-            <FormControlLabel
-              label="Custom Software"
-              labelPlacement="start"
-              control={
-                <Switch
-                  checked={softwareChecked}
-                  color="primary"
-                  onChange={() => setSoftwareChecked(!softwareChecked)}
-                />
-              }
-            />
+              </Grid>
+            </Grid>
           </FormGroup>
         </Grid>
 
         {/*----- Data Table -----*/}
-        <Grid item style={{ marginBottom: "35em", marginTop: "5em" }}>
-          <TableContainer component={Paper} elevation={0}>
-            {/* <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center">Name</TableCell>
-                  <TableCell align="center">Date</TableCell>
-                  <TableCell align="center">Service</TableCell>
-                  <TableCell align="center">Features</TableCell>
-                  <TableCell align="center">Complexity</TableCell>
-                  <TableCell align="center">Platforms</TableCell>
-                  <TableCell align="center">Users</TableCell>
-                  <TableCell align="center">Total</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows
-                  .filter((row) => row.search)
-                  .map((row, index) => (
-                    <TableRow key={index}>
-                      <TableCell align="center">{row.name}</TableCell>
-                      <TableCell align="center">{row.date}</TableCell>
-                      <TableCell align="center">{row.service}</TableCell>
-                      <TableCell align="center" style={{ maxWidth: "5em" }}>
-                        {row.features}
-                      </TableCell>
-                      <TableCell align="center">{row.complexity}</TableCell>
-                      <TableCell align="center">{row.platforms}</TableCell>
-                      <TableCell align="center">{row.users}</TableCell>
-                      <TableCell align="center">{row.total}</TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table> */}
-
-            <EnhancedTable
-              rows={rows}
-              setRows={setRows}
-              page={page}
-              setPage={setPage}
-              websiteChecked={websiteChecked}
-              iOSChecked={iOSChecked}
-              androidChecked={androidChecked}
-              softwareChecked={softwareChecked}
-            />
-          </TableContainer>
+        <Grid
+          item
+          style={{
+            marginBottom: matchesMD ? "40em" : "35em",
+            marginTop: "5em",
+            maxWidth: "100%",
+          }}
+        >
+          <EnhancedTable
+            rows={rows}
+            setRows={setRows}
+            page={page}
+            setPage={setPage}
+            websiteChecked={websiteChecked}
+            iOSChecked={iOSChecked}
+            androidChecked={androidChecked}
+            softwareChecked={softwareChecked}
+          />
         </Grid>
 
         {/*----- Dialog Component -----*/}
