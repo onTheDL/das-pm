@@ -22,6 +22,10 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import Snackbar from "@material-ui/core/Snackbar";
 import Button from "@material-ui/core/Button";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import TextField from "@material-ui/core/TextField";
+import InputAdornment from "@material-ui/core/InputAdornment";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -139,6 +143,22 @@ const useToolbarStyles = makeStyles((theme) => ({
   title: {
     flex: "1 1 100%",
   },
+  menu: {
+    "&:hover": {
+      backgroundColor: "#fff",
+    },
+    "&.Mui-focusVisible": {
+      backgroundColor: "#fff",
+    },
+  },
+  totalFilter: {
+    fontSize: "2rem",
+    color: theme.palette.common.orange,
+  },
+  dollarSign: {
+    color: theme.palette.common.orange,
+    fontSize: "1.5rem",
+  },
 }));
 
 const EnhancedTableToolbar = (props) => {
@@ -146,12 +166,27 @@ const EnhancedTableToolbar = (props) => {
 
   const { numSelected, selected, setSelected, rows, setRows } = props;
 
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [openMenu, setOpenMenu] = useState(false);
+  const [totalFilter, setTotalFilter] = useState(">");
+  const [filterPrice, setFilterPrice] = useState("");
+
   const [undo, setUndo] = useState([]);
   const [alert, setAlert] = useState({
     open: false,
     backgroundColor: "#FF3232",
     message: "Row deleted!",
   });
+
+  const handleClick = (e) => {
+    setAnchorEl(e.currentTarget);
+    setOpenMenu(true);
+  };
+
+  const handleClose = (e) => {
+    setAnchorEl(null);
+    setOpenMenu(false);
+  };
 
   const handleDelete = () => {
     const newRows = [...rows];
@@ -177,6 +212,44 @@ const EnhancedTableToolbar = (props) => {
     Array.prototype.push.apply(newRows, ...redo);
     setRows(newRows);
   };
+
+  const handleTotalFilter = (e) => {
+    setFilterPrice(e.target.value);
+
+    if (e.target.value !== "") {
+      const newRows = [...rows];
+      newRows.map((row) =>
+        eval(
+          `${e.target.value} ${
+            totalFilter === "=" ? "===" : totalFilter
+          } ${row.total.slice(1, row.total.length)}`
+        )
+          ? (row.search = true)
+          : (row.search = false)
+      );
+      setRows(newRows);
+    } else {
+      const newRows = [...rows]
+      newRows.map(row => row.search = true)
+      setRows(newRows)
+    }
+  };
+
+  const filterChange = (operator) => {
+    if (filterPrice !== '') {
+      const newRows = [...rows]
+      newRows.map((row) =>
+        eval(
+          `${filterPrice} ${
+            operator === "=" ? "===" : operator
+          } ${row.total.slice(1, row.total.length)}`
+        )
+          ? (row.search = true)
+          : (row.search = false)
+      );
+      setRows(newRows);
+    }
+  }
 
   return (
     <Toolbar
@@ -211,7 +284,7 @@ const EnhancedTableToolbar = (props) => {
         </Tooltip>
       ) : (
         <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
+          <IconButton aria-label="filter list" onClick={handleClick}>
             <FilterListIcon style={{ fontSize: 50 }} color="secondary" />
           </IconButton>
         </Tooltip>
@@ -237,6 +310,57 @@ const EnhancedTableToolbar = (props) => {
           </Button>
         }
       />
+
+      <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        open={openMenu}
+        onClose={handleClose}
+        classes={{ paper: classes.menu }}
+        elevation={0}
+        style={{ zIndex: 1302 }}
+        keepMounted
+      >
+        <MenuItem classes={{ root: classes.menu }}>
+          <TextField
+            placeholder="Enter a price to filter"
+            value={filterPrice}
+            onChange={handleTotalFilter}
+            InputProps={{
+              type: "number",
+              startAdornment: (
+                <InputAdornment position="start">
+                  <span className={classes.dollarSign}>$</span>
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment
+                  position="end"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    setTotalFilter(
+                      totalFilter === ">"
+                        ? "<"
+                        : totalFilter === "<"
+                        ? "="
+                        : ">"
+                    );
+                    filterChange(
+                      totalFilter === ">"
+                        ? "<"
+                        : totalFilter === "<"
+                        ? "="
+                        : ">"
+                    );
+                  }}
+                >
+                  <span className={classes.totalFilter}>{totalFilter}</span>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </MenuItem>
+      </Menu>
     </Toolbar>
   );
 };
@@ -332,28 +456,41 @@ export default function EnhancedTable({
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const switchFilters = () => {
-    const websites = rows.filter(row => websiteChecked ? row.service === "Website" : null)
+    const websites = rows.filter((row) =>
+      websiteChecked ? row.service === "Website" : null
+    );
 
-    const iOSApps = rows.filter(row => iOSChecked ? row.platforms.includes("iOS") : null)
+    const iOSApps = rows.filter((row) =>
+      iOSChecked ? row.platforms.includes("iOS") : null
+    );
 
-    const androidApps = rows.filter(row => androidChecked ? row.platforms.includes('Android') : null)
+    const androidApps = rows.filter((row) =>
+      androidChecked ? row.platforms.includes("Android") : null
+    );
 
-    const customSoftware = rows.filter(row => softwareChecked ? row.service === "Custom Software" : null)
+    const customSoftware = rows.filter((row) =>
+      softwareChecked ? row.service === "Custom Software" : null
+    );
 
     if (!websiteChecked && !iOSChecked && !androidChecked && !softwareChecked) {
-      return rows
+      return rows;
     } else {
       // Filtering unique rows
-      let newRows = websites.concat(iOSApps.filter(item => websites.indexOf(item) < 0))
+      let newRows = websites.concat(
+        iOSApps.filter((item) => websites.indexOf(item) < 0)
+      );
 
-      let newRows2 = newRows.concat(androidApps.filter(item => newRows.indexOf(item) < 0))
+      let newRows2 = newRows.concat(
+        androidApps.filter((item) => newRows.indexOf(item) < 0)
+      );
 
-      let newRows3 = newRows2.concat(customSoftware.filter(item => newRows2.indexOf(item) < 0))
+      let newRows3 = newRows2.concat(
+        customSoftware.filter((item) => newRows2.indexOf(item) < 0)
+      );
 
-      return newRows3
+      return newRows3;
     }
-
-  }
+  };
 
   return (
     <div className={classes.root}>
