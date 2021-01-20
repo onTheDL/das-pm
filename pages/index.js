@@ -90,6 +90,7 @@ export default function ProjectManager() {
   const [softwareChecked, setSoftwareChecked] = useState(false);
 
   const platformOptions = ["Web", "iOS", "Android"];
+
   let featureOptions = [
     "Photo/Video",
     "GPS",
@@ -595,6 +596,7 @@ export default function ProjectManager() {
                       <Select
                         labelId="platforms"
                         id="platforms"
+                        MenuProps={{ style: { zIndex: 1302 } }}
                         style={{ width: matchesSM ? 250 : "12em" }}
                         multiple
                         displayEmpty
