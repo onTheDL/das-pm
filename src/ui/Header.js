@@ -42,7 +42,7 @@ export default function Header(props) {
             className={classes.logoContainer}
           >
             <img
-              src="/assets/webdev-logo.svg"
+              src="/assets/dasLogo.svg"
               alt="placeholder logo"
               className={classes.logo}
             />
