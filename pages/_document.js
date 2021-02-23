@@ -1,21 +1,36 @@
-import React from 'react';
-import Document, { Html, Head, Main, NextScript } from 'next/document';
-import { ServerStyleSheets } from '@material-ui/core/styles';
-import Theme from "../src/ui/Theme"
+import React from "react";
+import Document, { Html, Head, Main, NextScript } from "next/document";
+import { ServerStyleSheets } from "@material-ui/core/styles";
+import Theme from "../src/ui/Theme";
 
 export default class MyDocument extends Document {
   render() {
     return (
       <Html lang="en">
         <Head>
+          <meta charset="utf-8" />
+          <link rel="shortcut icon" href="/favicon.png" />
+          <meta
+            name="viewport"
+            content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
+          />
           {/* PWA primary color */}
           <meta name="theme-color" content={Theme.palette.primary.main} />
+
+          {/* Open Graph - SEO */}
+          <meta property="og:type" content="website" />
+          <meta property="og:image" content="https://i.imgur.com/Sk5o8KK.png" />
+          <meta property="og:image:type" content="image/png" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content="Index screenshot" />
+          
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Raleway:100,400,400i,700|Roboto:300,400,500,700&display=swap"
           />
         </Head>
-        <body style={{backgroundColor: "#fff"}}>
+        <body style={{ backgroundColor: "#fff" }}>
           <Main />
           <NextScript />
         </body>
@@ -63,6 +78,9 @@ MyDocument.getInitialProps = async (ctx) => {
   return {
     ...initialProps,
     // Styles fragment is rendered after the app and page rendering finish.
-    styles: [...React.Children.toArray(initialProps.styles), sheets.getStyleElement()],
+    styles: [
+      ...React.Children.toArray(initialProps.styles),
+      sheets.getStyleElement(),
+    ],
   };
 };
