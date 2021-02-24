@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Head from "next/head";
 import {
   Grid,
   Typography,
@@ -6,15 +7,15 @@ import {
   InputAdornment,
   Switch,
   FormGroup,
-  FormControl,
+  // FormControl,
   FormControlLabel,
-  Table,
-  TableBody,
-  TableHead,
-  TableContainer,
-  TableRow,
-  TableCell,
-  Paper,
+  // Table,
+  // TableBody,
+  // TableHead,
+  // TableContainer,
+  // TableRow,
+  // TableCell,
+  // Paper,
   Dialog,
   DialogContent,
   RadioGroup,
@@ -257,7 +258,7 @@ export default function ProjectManager() {
 
   const serviceQuestions = (
     <>
-      <Grid item style={{ marginTop: matchesSM ? 20 : null}}>
+      <Grid item style={{ marginTop: matchesSM ? 20 : null }}>
         <Typography variant="h4">Service</Typography>
       </Grid>
       <Grid item>
@@ -296,7 +297,7 @@ export default function ProjectManager() {
   );
 
   const complexityQuestions = (
-    <Grid item style={{marginBottom: matchesSM ? 50 : null}}>
+    <Grid item style={{ marginBottom: matchesSM ? 50 : null }}>
       <Grid
         item
         container
@@ -407,6 +408,19 @@ export default function ProjectManager() {
         direction="column"
         alignItems={matchesSM ? "center" : undefined}
       >
+
+        <Head>
+          <title key="title">
+            Project Manager | DAS Development
+          </title>
+          <meta name="description" key="description" content="DAS Development's internal client-side app used to keep track of its freelance projects.." />
+          
+          <meta property="og:title" key="og:title" content="Project Manager | DAS Development" />
+          <meta property="og:url" key="og:url" content="https://das-pm.vercel.app/" />
+          <link rel="canonical" key="canonical" href="https://das-pm.vercel.app/" />
+
+        </Head>
+
         <Grid
           item
           style={{ marginTop: "2em", marginLeft: matchesSM ? 0 : "5em" }}
@@ -568,14 +582,14 @@ export default function ProjectManager() {
                   <Hidden mdUp>{serviceQuestions}</Hidden>
                   <Hidden mdUp>{usersQuestions}</Hidden>
                   <Hidden mdUp>{complexityQuestions}</Hidden>
-                  
+
                   {/*--- Name TextField ---*/}
                   <Grid item>
                     <TextField
                       label="Name"
                       id="name"
                       value={name}
-                      style={{width: matchesSM ? 250 : undefined}}
+                      style={{ width: matchesSM ? 250 : undefined }}
                       fullWidth={!matchesSM}
                       onChange={(e) => setName(e.target.value)}
                     />
@@ -630,7 +644,7 @@ export default function ProjectManager() {
                 >
                   <Grid item>
                     <KeyboardDatePicker
-                      style={{width: matchesSM ? 250 : undefined}}
+                      style={{ width: matchesSM ? 250 : undefined }}
                       format="MM/dd/yyyy"
                       value={date}
                       onChange={(newDate) => setDate(newDate)}
@@ -654,7 +668,7 @@ export default function ProjectManager() {
                   {/*--- Total TextField ---*/}
                   <Grid item>
                     <TextField
-                      style={{width: matchesSM ? 250 : undefined}}
+                      style={{ width: matchesSM ? 250 : undefined }}
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">$</InputAdornment>
