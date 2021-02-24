@@ -413,7 +413,7 @@ export default function ProjectManager() {
           <title key="title">
             Project Manager | DAS Development
           </title>
-          <meta name="description" key="description" content="DAS Development's internal client-side app used to keep track of its freelance projects.." />
+          <meta name="description" key="description" content="DAS Development's internal client-side app used to keep track of its freelance projects." />
           
           <meta property="og:title" key="og:title" content="Project Manager | DAS Development" />
           <meta property="og:url" key="og:url" content="https://das-pm.vercel.app/" />
