@@ -16,9 +16,12 @@ npm run dev
 
 ## Stack
 
-- Javascript, React.js
-- Material UI, Html, CSS
-- Next.js
+- Javascript 
+- ReactJS
+- NextJS
+- Material UI
+- HTML
+- CSS
 
 ## Acknoledgements
 Logo generated with BrandCrowd.com
